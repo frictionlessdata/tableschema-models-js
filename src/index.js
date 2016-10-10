@@ -1,7 +1,7 @@
-var Storage = require('./storage');
-var define = require('./model');
+import Storage from './storage'
+import define from './model'
 
 module.exports = {
-  Storage: Storage,
-  define: define
-};
+  Storage
+  , define
+}
