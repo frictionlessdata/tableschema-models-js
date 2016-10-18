@@ -1,5 +1,5 @@
 import Storage from './storage'
-import define from './model'
+import define from './define'
 
 module.exports = {
   Storage

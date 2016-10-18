@@ -7,19 +7,23 @@ import jts from 'jsontableschema'
  */
 class Model {
   constructor(config, descriptor) {
-    if (!config.tableName) {
+    if (!config || !config.tableName) {
       throw new Error('Table name is required')
     }
 
     this.tableName = config.tableName
     this.resource = config.resource
     this.config = config
-    this.data = null
+    this.row = null
 
     const self = this
+      , methods = ['clone', 'keyed']
+
     if (_.isPlainObject(config.instanceMethods)) {
       _.forOwn(config.instanceMethods, (value, key) => {
-        self[key] = value.bind(self)
+        if (methods.indexOf(key) === -1) {
+          self[key] = value.bind(self)
+        }
       })
     }
 
@@ -28,31 +32,35 @@ class Model {
         (new jts.Schema(config.descriptor)).then(schema => {
           self.descriptor = schema
           resolve(self)
-        }, error => {
+        }).catch(error => {
           reject(error)
         })
       })
-    } else {
-      this.descriptor = descriptor
     }
+    self.descriptor = descriptor
+    return this
   }
 
-  setData(row) {
-    this.data = row
+  get data() {
+    return this.row
+  }
+
+  set data(row) {
+    this.row = row
   }
 
   /**
    * Return object with map of values to headers of the row of values
    * @returns {Object}
    */
-  mapped() {
-    if (!this.data) {
+  keyed() {
+    if (!this.row) {
       return {}
     }
     const result = {}
-      , row = this.data
+      , row = this.row
 
-    _.forEach(this.descriptor.headers(), (header, index) => {
+    _.forEach(this.descriptor.headers, (header, index) => {
       result[header] = row[index]
     })
     return result
