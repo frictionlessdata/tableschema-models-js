@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import jts from 'jsontableschema'
+
 const collections = {}
   , models = {}
 
@@ -39,7 +40,7 @@ export default {
   }
 
   /**
-   * Load data of model to memory
+   * Load data of model into memory
    *
    * @param model
    * @returns {Promise}
